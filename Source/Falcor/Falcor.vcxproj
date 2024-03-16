@@ -1166,7 +1166,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>FALCOR_DLL;IMGUI_API=__declspec(dllexport);_PROJECT_DIR_=R"($(ProjectDir))";_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;FALCOR_D3D12;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions);GLM_FORCE_DEPTH_ZERO_TO_ONE;_$(OutputType)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir)\..\Externals\.packman\rtxdi\rtxdi-sdk\include;$(ProjectDir)\..\Externals\.packman\rtxgi\rtxgi-sdk\include;$(ProjectDir)\..\Externals\.packman\agility-sdk\build\native\include;$(ProjectDir);$(ProjectDir)\..\Externals\.packman\deps\include;$(ProjectDir)\..\Externals\.packman;$(ProjectDir)\..\Externals;$(ProjectDir)\..\Externals\.packman\python\Include;$(ProjectDir)\..\Externals\;$(ProjectDir)\..\Externals\.packman\nvtt\include;$(ProjectDir)\..\Externals\.packman\nvapi;$(ProjectDir)\..\Externals\.packman\nanovdb\include;$(ProjectDir)\..\Externals\.packman\nv-usd-debug\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ConformanceMode>true</ConformanceMode>
@@ -1205,7 +1205,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>FALCOR_DLL;IMGUI_API=__declspec(dllexport);_PROJECT_DIR_=R"($(ProjectDir))";_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;FALCOR_GFX_D3D12;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions);GLM_FORCE_DEPTH_ZERO_TO_ONE;_$(OutputType)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir)\..\Externals\.packman\rtxdi\rtxdi-sdk\include;$(ProjectDir)\..\Externals\.packman\rtxgi\rtxgi-sdk\include;$(ProjectDir)\..\Externals\.packman\agility-sdk\build\native\include;$(ProjectDir);$(ProjectDir)\..\Externals\.packman\deps\include;$(ProjectDir)\..\Externals\.packman;$(ProjectDir)\..\Externals;$(ProjectDir)\..\Externals\.packman\python\Include;$(ProjectDir)\..\Externals\;$(ProjectDir)\..\Externals\.packman\nvtt\include;$(ProjectDir)\..\Externals\.packman\nvapi;$(ProjectDir)\..\Externals\.packman\nanovdb\include;$(ProjectDir)\..\Externals\.packman\nv-usd-debug\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ConformanceMode>true</ConformanceMode>
@@ -1244,7 +1244,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>FALCOR_DLL;IMGUI_API=__declspec(dllexport);_PROJECT_DIR_=R"($(ProjectDir))";_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;FALCOR_GFX_VK;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions);GLM_FORCE_DEPTH_ZERO_TO_ONE;_$(OutputType)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir)\..\Externals\.packman\rtxdi\rtxdi-sdk\include;$(ProjectDir)\..\Externals\.packman\rtxgi\rtxgi-sdk\include;$(ProjectDir)\..\Externals\.packman\agility-sdk\build\native\include;$(ProjectDir);$(ProjectDir)\..\Externals\.packman\deps\include;$(ProjectDir)\..\Externals\.packman;$(ProjectDir)\..\Externals;$(ProjectDir)\..\Externals\.packman\python\Include;$(ProjectDir)\..\Externals\;$(ProjectDir)\..\Externals\.packman\nvtt\include;$(ProjectDir)\..\Externals\.packman\nvapi;$(ProjectDir)\..\Externals\.packman\nanovdb\include;$(ProjectDir)\..\Externals\.packman\nv-usd-debug\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ConformanceMode>true</ConformanceMode>
@@ -1284,7 +1284,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>FALCOR_DLL;IMGUI_API=__declspec(dllexport);_PROJECT_DIR_=R"($(ProjectDir))";_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;FALCOR_D3D12;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions);GLM_FORCE_DEPTH_ZERO_TO_ONE</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir)\..\Externals\.packman\rtxdi\rtxdi-sdk\include;$(ProjectDir)\..\Externals\.packman\rtxgi\rtxgi-sdk\include;$(ProjectDir)\..\Externals\.packman\agility-sdk\build\native\include;$(ProjectDir);$(ProjectDir)\..\Externals\.packman\deps\include;$(ProjectDir)\..\Externals\.packman;$(ProjectDir)\..\Externals;$(ProjectDir)\..\Externals\.packman\python\Include;$(ProjectDir)\..\Externals\;$(ProjectDir)\..\Externals\.packman\nvtt\include;$(ProjectDir)\..\Externals\.packman\nvapi;$(ProjectDir)\..\Externals\.packman\nanovdb\include;$(ProjectDir)\..\Externals\.packman\nv-usd-release\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ConformanceMode>true</ConformanceMode>
@@ -1327,7 +1327,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>FALCOR_DLL;IMGUI_API=__declspec(dllexport);_PROJECT_DIR_=R"($(ProjectDir))";_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;FALCOR_GFX_D3D12;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions);GLM_FORCE_DEPTH_ZERO_TO_ONE</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir)\..\Externals\.packman\rtxdi\rtxdi-sdk\include;$(ProjectDir)\..\Externals\.packman\rtxgi\rtxgi-sdk\include;$(ProjectDir)\..\Externals\.packman\agility-sdk\build\native\include;$(ProjectDir);$(ProjectDir)\..\Externals\.packman\deps\include;$(ProjectDir)\..\Externals\.packman;$(ProjectDir)\..\Externals;$(ProjectDir)\..\Externals\.packman\python\Include;$(ProjectDir)\..\Externals\;$(ProjectDir)\..\Externals\.packman\nvtt\include;$(ProjectDir)\..\Externals\.packman\nvapi;$(ProjectDir)\..\Externals\.packman\nanovdb\include;$(ProjectDir)\..\Externals\.packman\nv-usd-release\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ConformanceMode>true</ConformanceMode>
@@ -1370,7 +1370,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>FALCOR_DLL;IMGUI_API=__declspec(dllexport);_PROJECT_DIR_=R"($(ProjectDir))";_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;FALCOR_GFX_VK;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions);GLM_FORCE_DEPTH_ZERO_TO_ONE</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir)\..\Externals\.packman\rtxdi\rtxdi-sdk\include;$(ProjectDir)\..\Externals\.packman\rtxgi\rtxgi-sdk\include;$(ProjectDir)\..\Externals\.packman\agility-sdk\build\native\include;$(ProjectDir);$(ProjectDir)\..\Externals\.packman\deps\include;$(ProjectDir)\..\Externals\.packman;$(ProjectDir)\..\Externals;$(ProjectDir)\..\Externals\.packman\python\Include;$(ProjectDir)\..\Externals\;$(ProjectDir)\..\Externals\.packman\nvtt\include;$(ProjectDir)\..\Externals\.packman\nvapi;$(ProjectDir)\..\Externals\.packman\nanovdb\include;$(ProjectDir)\..\Externals\.packman\nv-usd-release\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ConformanceMode>true</ConformanceMode>
