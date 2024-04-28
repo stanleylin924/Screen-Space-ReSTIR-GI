@@ -171,6 +171,7 @@
     <ClInclude Include="Rendering\Lights\LightBVHBuilder.h" />
     <ClInclude Include="Rendering\Lights\LightBVHSampler.h" />
     <ClInclude Include="Rendering\Materials\BSDFIntegrator.h" />
+    <ClInclude Include="Rendering\MyReSTIRGI\ScreenSpaceReSTIR.h" />
     <ClInclude Include="Rendering\ReSTIRGI\ScreenSpaceReSTIR.h" />
     <ClInclude Include="Rendering\RTXDI\RTXDIModule.h" />
     <ClInclude Include="Rendering\RTXDI\RTXDI.h" />
@@ -237,6 +238,15 @@
     <ShaderSource Include="Rendering\Materials\StandardMaterial.slang" />
     <ShaderSource Include="Rendering\Materials\TexLODHelpers.slang" />
     <ShaderSource Include="Rendering\Materials\TexLODTypes.slang" />
+    <ShaderSource Include="Rendering\MyReSTIRGI\EvalContext.slang" />
+    <ShaderSource Include="Rendering\MyReSTIRGI\FinalSample.slang" />
+    <ShaderSource Include="Rendering\MyReSTIRGI\GIClearReservoirs.cs.slang" />
+    <ShaderSource Include="Rendering\MyReSTIRGI\GIResampling.cs.slang" />
+    <ShaderSource Include="Rendering\MyReSTIRGI\GIReservoir.slang" />
+    <ShaderSource Include="Rendering\MyReSTIRGI\Params.slang" />
+    <ShaderSource Include="Rendering\MyReSTIRGI\ReflectTypes.cs.slang" />
+    <ShaderSource Include="Rendering\MyReSTIRGI\ScreenSpaceReSTIR.slang" />
+    <ShaderSource Include="Rendering\MyReSTIRGI\SurfaceData.slang" />
     <ShaderSource Include="Rendering\ReSTIRGI\EvalContext.slang" />
     <ShaderSource Include="Rendering\ReSTIRGI\FinalSample.slang" />
     <ShaderSource Include="Rendering\ReSTIRGI\GIClearReservoirs.cs.slang" />
@@ -913,6 +923,7 @@
     <ClCompile Include="Rendering\Lights\LightBVHSampler.cpp" />
     <ClCompile Include="Rendering\Materials\BSDFIntegrator.cpp" />
     <ClCompile Include="Rendering\Materials\TexLODTypes.cpp" />
+    <ClCompile Include="Rendering\MyReSTIRGI\ScreenSpaceReSTIR.cpp" />
     <ClCompile Include="Rendering\ReSTIRGI\ScreenSpaceReSTIR.cpp" />
     <ClCompile Include="Rendering\RTXDI\RTXDI.cpp" />
     <ClCompile Include="Rendering\RTXDI\RTXDISDK.cpp" />
