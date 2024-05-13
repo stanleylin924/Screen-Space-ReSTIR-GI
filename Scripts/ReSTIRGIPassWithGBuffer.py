@@ -55,6 +55,11 @@ def render_graph_ReSTIRGI():
 
     g.addEdge("AccumulatePass.output", "ToneMapper.src")
 
+    g.markOutput("ToneMapper.dst")
+    g.markOutput("AccumulatePass.output")
+    g.markOutput("GlobalIlluminationPass.color")
+    g.markOutput("RTXDIPass.color")
+    g.markOutput("ReSTIRGIPass.color")
     g.markOutput('ReSTIRGIGBuffer.vPosW')
     g.markOutput('ReSTIRGIGBuffer.vNormW')
     g.markOutput('ReSTIRGIGBuffer.vColor')
@@ -63,10 +68,14 @@ def render_graph_ReSTIRGI():
     g.markOutput('ReSTIRGIGBuffer.sNormW')
     g.markOutput('ReSTIRGIGBuffer.vColor')
     g.markOutput('ReSTIRGIGBuffer.sColor')
-    g.markOutput("ToneMapper.dst")
 
     return g
 
 ReSTIRGI = render_graph_ReSTIRGI()
 try: m.addGraph(ReSTIRGI)
 except NameError: None
+
+# m.loadScene('Arcade\Arcade.pyscene')
+m.loadScene('../Data/pink_room/pink_room.pyscene')
+# m.loadScene('../Data/VeachAjar/VeachAjar.pyscene')
+# m.loadScene('../Data/VeachAjar/VeachAjarAnimated.pyscene')
