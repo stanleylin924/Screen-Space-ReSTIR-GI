@@ -26,6 +26,7 @@
  # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
 #include "ReSTIRGIPass.h"
+#include "RenderGraph/RenderPassHelpers.h"
 
 const RenderPass::Info ReSTIRGIPass::kInfo { "ReSTIRGIPass", "Standalone pass for indirect lighting using ReSTIR GI." };
 
@@ -74,14 +75,12 @@ namespace
 
     const Falcor::ChannelList kOutputChannels =
     {
-        //{ "color",  "gColor",   "Final color",  true /* optional */, ResourceFormat::RGBA32Float },
         { "color",                  "gColor",                   "Final color",              true /* optional */, ResourceFormat::RGBA32Float },
         { "emission",               "gEmission",                "Emissive color",           true /* optional */, ResourceFormat::RGBA32Float },
         { "diffuseIllumination",    "gDiffuseIllumination",     "Diffuse illumination",     true /* optional */, ResourceFormat::RGBA32Float },
         { "diffuseReflectance",     "gDiffuseReflectance",      "Diffuse reflectance",      true /* optional */, ResourceFormat::RGBA32Float },
         { "specularIllumination",   "gSpecularIllumination",    "Specular illumination",    true /* optional */, ResourceFormat::RGBA32Float },
         { "specularReflectance",    "gSpecularReflectance",     "Specular reflectance",     true /* optional */, ResourceFormat::RGBA32Float },
-        { "debug",                  "gDebug",                   "Debug output",             true /* optional */, ResourceFormat::RGBA32Float },
     };
 
     // Scripting options.
@@ -107,6 +106,12 @@ ReSTIRGIPass::SharedPtr ReSTIRGIPass::create(RenderContext* pRenderContext, cons
     return pPass;
 }
 
+ReSTIRGIPass::ReSTIRGIPass(const Dictionary& dict)
+    : RenderPass(kInfo)
+{
+    parseDictionary(dict);
+}
+
 Dictionary ReSTIRGIPass::getScriptingDictionary()
 {
     Dictionary d;
@@ -116,12 +121,38 @@ Dictionary ReSTIRGIPass::getScriptingDictionary()
     return d;
 }
 
+void ReSTIRGIPass::parseDictionary(const Dictionary& dict)
+{
+    for (const auto& [key, value] : dict)
+    {
+        if (key == kOptions)
+        {
+            mOptions = value;
+        }
+        else if (key == kNumReSTIRInstances)
+        {
+            mNumReSTIRInstances = value;
+        }
+        else if (key == kComputeDirect)
+        {
+            mComputeDirect = value;
+        }
+        else
+        {
+            logWarning("Unknown field '" + key + "' in ScreenSpaceReSTIRPass dictionary");
+        }
+    }
+
+    if (!mpScreenSpaceReSTIR.empty() && mpScreenSpaceReSTIR[0])
+    {
+        mpScreenSpaceReSTIR[0]->mOptions = mOptions;
+    }
+}
+
 RenderPassReflection ReSTIRGIPass::reflect(const CompileData& compileData)
 {
-    // Define the required resources here
     RenderPassReflection reflector;
-    //reflector.addOutput("dst");
-    //reflector.addInput("src");
+
     addRenderPassOutputs(reflector, kOutputChannels);
     addRenderPassInputs(reflector, kInputChannels);
 
@@ -133,12 +164,49 @@ void ReSTIRGIPass::compile(RenderContext* pRenderContext, const CompileData& com
     mFrameDim = compileData.defaultTexDims;
 }
 
+void ReSTIRGIPass::setScene(RenderContext* pRenderContext, const Scene::SharedPtr& pScene)
+{
+    mpScene = pScene;
+    mpPrepareSurfaceData = nullptr;
+    mpFinalShading = nullptr;
+
+    if (!mpScreenSpaceReSTIR.empty())
+    {
+        //mOptions = mpScreenSpaceReSTIR->getOptions();
+        mpScreenSpaceReSTIR.clear();
+    }
+
+    if (mpScene)
+    {
+        if (pScene->hasProceduralGeometry())
+        {
+            logError("This render pass does not support procedural primitives such as curves.");
+        }
+
+        mpScreenSpaceReSTIR.resize(mNumReSTIRInstances);
+        for (int i = 0; i < mNumReSTIRInstances; i++)
+        {
+            mpScreenSpaceReSTIR[i] = ScreenSpaceReSTIR::create(mpScene, mOptions, mNumReSTIRInstances, i);
+        }
+    }
+}
+
+bool ReSTIRGIPass::onMouseEvent(const MouseEvent& mouseEvent)
+{
+    return !mpScreenSpaceReSTIR.empty() && mpScreenSpaceReSTIR[0] ? mpScreenSpaceReSTIR[0]->getPixelDebug()->onMouseEvent(mouseEvent) : false;
+}
+
+void ReSTIRGIPass::updateDict(const Dictionary& dict)
+{
+    parseDictionary(dict);
+    mOptionsChanged = true;
+    if (!mpScreenSpaceReSTIR.empty() && mpScreenSpaceReSTIR[0])
+        mpScreenSpaceReSTIR[0]->resetReservoirCount();
+}
+
 void ReSTIRGIPass::execute(RenderContext* pRenderContext, const RenderData& renderData)
 {
-    if (mNeedRecreateReSTIRInstances)
-    {
-        setScene(pRenderContext, mpScene);
-    }
+    if (mNeedRecreateReSTIRInstances) setScene(pRenderContext, mpScene);
 
     // Clear outputs if no scene is loaded.
     if (!mpScene)
@@ -222,11 +290,6 @@ void ReSTIRGIPass::execute(RenderContext* pRenderContext, const RenderData& rend
             pRenderContext->clearUAV(pDst->getUAV().get(), uint4(0, 0, 0, 0));
         }
     };
-    // Copy debug output if available. (only support first ReSTIR instance for now)
-    //if (const auto& pDebug = renderData["debug"]->asTexture())
-    //{
-    //    copyTexture(pDebug.get(), mpScreenSpaceReSTIR[0]->getDebugOutputTexture().get());
-    //}
 }
 
 void ReSTIRGIPass::renderUI(Gui::Widgets& widget)
@@ -259,72 +322,6 @@ void ReSTIRGIPass::renderUI(Gui::Widgets& widget)
     }
 }
 
-void ReSTIRGIPass::setScene(RenderContext* pRenderContext, const Scene::SharedPtr& pScene)
-{
-    mpScene = pScene;
-    mpPrepareSurfaceData = nullptr;
-    mpFinalShading = nullptr;
-
-    if (!mpScreenSpaceReSTIR.empty())
-    {
-        //mOptions = mpScreenSpaceReSTIR->getOptions();
-        mpScreenSpaceReSTIR.clear();
-    }
-
-    if (mpScene)
-    {
-        if (pScene->hasProceduralGeometry())
-        {
-            logError("This render pass does not support procedural primitives such as curves.");
-        }
-
-        mpScreenSpaceReSTIR.resize(mNumReSTIRInstances);
-        for (int i = 0; i < mNumReSTIRInstances; i++)
-        {
-            mpScreenSpaceReSTIR[i] = ScreenSpaceReSTIR::create(mpScene, mOptions, mNumReSTIRInstances, i);
-        }
-    }
-}
-
-bool ReSTIRGIPass::onMouseEvent(const MouseEvent& mouseEvent)
-{
-    return !mpScreenSpaceReSTIR.empty() && mpScreenSpaceReSTIR[0] ? mpScreenSpaceReSTIR[0]->getPixelDebug()->onMouseEvent(mouseEvent) : false;
-}
-
-ReSTIRGIPass::ReSTIRGIPass(const Dictionary& dict)
-    : RenderPass(kInfo)
-{
-    parseDictionary(dict);
-}
-
-void ReSTIRGIPass::parseDictionary(const Dictionary& dict)
-{
-    for (const auto& [key, value] : dict)
-    {
-        if (key == kOptions)
-        {
-            mOptions = value;
-        }
-        else if (key == kNumReSTIRInstances)
-        {
-            mNumReSTIRInstances = value;
-        }
-        else if (key == kComputeDirect)
-        {
-            mComputeDirect = value;
-        }
-        else
-        {
-            logWarning("Unknown field '" + key + "' in ScreenSpaceReSTIRPass dictionary");
-        }
-    }
-
-    if (!mpScreenSpaceReSTIR.empty() && mpScreenSpaceReSTIR[0])
-    {
-        mpScreenSpaceReSTIR[0]->mOptions = mOptions;
-    }
-}
-
 void ReSTIRGIPass::prepareSurfaceData(RenderContext* pRenderContext, const Texture::SharedPtr& pVBuffer, size_t instanceID)
 {
     assert(!mpScreenSpaceReSTIR.empty() && mpScreenSpaceReSTIR[instanceID]);
@@ -348,12 +345,11 @@ void ReSTIRGIPass::prepareSurfaceData(RenderContext* pRenderContext, const Textu
     mpPrepareSurfaceData["gScene"] = mpScene->getParameterBlock();
 
     auto var = mpPrepareSurfaceData["gPrepareSurfaceData"];
-    //auto var = mpPrepareSurfaceData["CB"]["gPrepareSurfaceData"];
 
     var["vbuffer"] = pVBuffer;
     var["frameDim"] = mFrameDim;
-    //mpScreenSpaceReSTIR[instanceID]->setShaderData(var["screenSpaceReSTIR"]);
-    mpScreenSpaceReSTIR[instanceID]->setShaderDataRoot(mpPrepareSurfaceData->getRootVar());
+    mpScreenSpaceReSTIR[instanceID]->setShaderData(mpPrepareSurfaceData["gScreenSpaceReSTIR"]);
+    // mpScreenSpaceReSTIR[instanceID]->setShaderDataRoot(mpPrepareSurfaceData->getRootVar());
 
     if (instanceID == 0 && mpFinalShading && mpScreenSpaceReSTIR[0]->mRequestParentRecompile)
     {
@@ -397,7 +393,6 @@ void ReSTIRGIPass::initialSample(
     mpInitialSampling["gScene"] = mpScene->getParameterBlock();
 
     auto var = mpInitialSampling["gInitialSampling"];
-    //auto var = mpPrepareSurfaceData["CB"]["gPrepareSurfaceData"];
 
     var["vPosW"] = pVPosW;
     var["vNormW"] = pVNormW;
@@ -406,8 +401,8 @@ void ReSTIRGIPass::initialSample(
     var["sColor"] = pSColor;
     var["random"] = pRandom;
     var["frameDim"] = mFrameDim;
-    //mpScreenSpaceReSTIR[instanceID]->setShaderData(var["screenSpaceReSTIR"]);
-    mpScreenSpaceReSTIR[instanceID]->setShaderDataRoot(mpInitialSampling->getRootVar());
+    mpScreenSpaceReSTIR[instanceID]->setShaderData(mpInitialSampling["gScreenSpaceReSTIR"]);
+    // mpScreenSpaceReSTIR[instanceID]->setShaderDataRoot(mpInitialSampling->getRootVar());
 
     if (instanceID == 0 && mpFinalShading && mpScreenSpaceReSTIR[0]->mRequestParentRecompile)
     {
@@ -451,7 +446,6 @@ void ReSTIRGIPass::finalShading(RenderContext* pRenderContext, const Texture::Sh
     mpFinalShading["gScene"] = mpScene->getParameterBlock();
 
     auto var = mpFinalShading["gFinalShading"];
-    //auto var = mpFinalShading["CB"]["gFinalShading"];
 
     var["vbuffer"] = pVBuffer;
     var["vColor"] = pVColor;
@@ -459,8 +453,8 @@ void ReSTIRGIPass::finalShading(RenderContext* pRenderContext, const Texture::Sh
     var["numReSTIRInstances"] = mNumReSTIRInstances;
     var["ReSTIRInstanceID"] = instanceID;
 
-    //mpScreenSpaceReSTIR[instanceID]->setShaderData(var["screenSpaceReSTIR"]);
-    mpScreenSpaceReSTIR[instanceID]->setShaderDataRoot(mpFinalShading->getRootVar());
+    mpScreenSpaceReSTIR[instanceID]->setShaderData(mpFinalShading["gScreenSpaceReSTIR"]);
+    // mpScreenSpaceReSTIR[instanceID]->setShaderDataRoot(mpFinalShading->getRootVar());
 
     // Bind output channels as UAV buffers.
     var = mpFinalShading->getRootVar();
@@ -472,14 +466,4 @@ void ReSTIRGIPass::finalShading(RenderContext* pRenderContext, const Texture::Sh
     for (const auto& channel : kOutputChannels) bind(channel);
 
     mpFinalShading->execute(pRenderContext, mFrameDim.x, mFrameDim.y);
-}
-
-void ReSTIRGIPass::updateDict(const Dictionary& dict)
-{
-    parseDictionary(dict);
-    mOptionsChanged = true;
-    if (!mpScreenSpaceReSTIR.empty() && mpScreenSpaceReSTIR[0])
-    {
-        mpScreenSpaceReSTIR[0]->resetReservoirCount();
-    }
 }

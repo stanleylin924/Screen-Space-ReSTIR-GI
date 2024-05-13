@@ -47,7 +47,6 @@ struct ScreenSpaceReSTIR
     StructuredBuffer<PackedGIReservoir> reservoirs;
 
     // Common parameters.
-    uint frameIndex;
     uint2 frameDim;
     uint giReservoirCount;
     uint _pad;
@@ -101,35 +100,6 @@ struct ScreenSpaceReSTIR
         // Store compact normal depth information for spatial reuse.
         normalDepth[pixel] = packNormalDepth(float4(normal, depth));
     }
-
-    //void setSurfaceData(const uint2 pixel, const float3 position, const float3 normal, const float3 diffuse, const float3 specular, const float specularRoughness, uint lobes = 0)
-    //{
-    //    if (any(pixel >= frameDim)) return;
-    //
-    //    SurfaceData sd = {};
-    //    sd.pos = position;
-    //    sd.normal = normal;
-    //    sd.depth = distance(gScene.camera.getPosition(), position);
-    //
-    //    float diffuseWeight = luminance(diffuse);
-    //    float specularWeight = luminance(specular);
-    //    float sumWeights = diffuseWeight + specularWeight;
-    //    float diffuseProb = sumWeights < 1e-7f ? 1.f : (diffuseWeight / sumWeights);
-    //
-    //    sd.diffuseWeight = diffuseWeight;
-    //    sd.specularWeight = specularWeight;
-    //    //sd.diffuseProb = diffuseProb;
-    //    sd.specularRoughness = specularRoughness;
-    //    sd.lobes = lobes;
-    //
-    //    surfaceData[getPixelIndex(pixel)] = sd.pack();
-    //
-    //    // Store compact normal depth information for spatial reuse.
-    //    normalDepth[pixel] = packNormalDepth(float4(normal, sd.depth));
-    //
-    //    // Store surface data.
-    //    //gRTXDI.surfaceData[bufferIdx] = sd.pack();
-    //}
 
     /** Mark pixel as containing no valid shading data.
         \param[in] pixel Pixel coordinate.
@@ -260,7 +230,3 @@ struct ScreenSpaceReSTIR
 };
 
 ParameterBlock<ScreenSpaceReSTIR> gScreenSpaceReSTIR;
-//cbuffer CB
-//{
-//    ScreenSpaceReSTIR gScreenSpaceReSTIR;
-//}

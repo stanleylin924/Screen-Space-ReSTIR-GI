@@ -192,8 +192,6 @@ namespace Falcor
         */
         void setShaderData(const ShaderVar& var) const;
 
-        void setShaderDataRoot(const ShaderVar& rootVar) const;
-
         /** Render the GUI.
             \return True if options were changed, false otherwise.
         */

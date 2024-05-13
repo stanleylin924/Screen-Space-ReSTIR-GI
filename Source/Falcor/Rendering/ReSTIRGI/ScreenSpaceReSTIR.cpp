@@ -139,28 +139,6 @@ namespace Falcor
         var["giReservoirCount"] = mOptions.reSTIRGIReservoirCount;
     }
 
-    void ScreenSpaceReSTIR::setShaderDataRoot(const ShaderVar& rootVar) const
-    {
-        auto var = rootVar["gScreenSpaceReSTIR"];
-        //auto var = rootVar["CB"]["screenSpaceReSTIR"];
-
-        var["surfaceData"] = mpSurfaceData;
-        var["normalDepth"] = mpNormalDepthTexture;
-        //var["finalSamples"] = mpFinalSamples;
-
-        var["frameIndex"] = mFrameIndex;
-        var["frameDim"] = mFrameDim;
-
-        // ReSTIR GI.
-        var["initialSamples"] = mpGIInitialSamples;
-        //var["prevReservoirs"] = mpGIReservoirs[(mFrameIndex + 0) % 2];
-        //var["reservoirs"] = mpGIReservoirs[(mFrameIndex + 1) % 2];
-        var["prevReservoirs"] = mpGIReservoirs[((mFrameIndex - mReSTIRInstanceIndex) / mNumReSTIRInstances + 0) % 2];
-        var["reservoirs"] = mpGIReservoirs[((mFrameIndex - mReSTIRInstanceIndex) / mNumReSTIRInstances + 1) % 2];
-
-        var["giReservoirCount"] = mOptions.reSTIRGIReservoirCount;
-    }
-
     void ScreenSpaceReSTIR::enablePass(bool enabled)
     {
         mOptions.enabled = enabled;

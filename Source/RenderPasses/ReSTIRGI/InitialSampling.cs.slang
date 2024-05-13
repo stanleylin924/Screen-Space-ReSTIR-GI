@@ -21,8 +21,6 @@ struct InitialSampling
     Texture2D<float4> sColor;
     Texture2D<float> random;
 
-    //ScreenSpaceReSTIR screenSpaceReSTIR;
-
     uint2 frameDim;
 
     void execute(uint2 pixel)
@@ -34,10 +32,6 @@ struct InitialSampling
 };
 
 ParameterBlock<InitialSampling> gInitialSampling;
-//cbuffer CB
-//{
-//    PrepareSurfaceData gPrepareSurfaceData;
-//};
 
 [numthreads(16, 16, 1)]
 void main(uint3 dispatchThreadId : SV_DispatchThreadID)

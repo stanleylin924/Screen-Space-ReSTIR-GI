@@ -20,7 +20,6 @@ RWTexture2D<float4> gDiffuseIllumination;
 RWTexture2D<float4> gDiffuseReflectance;
 RWTexture2D<float4> gSpecularIllumination;
 RWTexture2D<float4> gSpecularReflectance;
-RWTexture2D<float4> gDebug;
 
 #define is_valid(name) (is_valid_##name != 0)
 static const bool kComputeDirect = COMPUTE_DIRECT;
@@ -169,10 +168,6 @@ struct FinalShading
 };
 
 ParameterBlock<FinalShading> gFinalShading;
-//cbuffer CB
-//{
-//    FinalShading gFinalShading;
-//};
 
 [numthreads(16, 16, 1)]
 void main(uint3 dispatchThreadId : SV_DispatchThreadID)
