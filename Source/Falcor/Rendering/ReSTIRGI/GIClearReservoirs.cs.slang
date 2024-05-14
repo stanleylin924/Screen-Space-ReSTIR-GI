@@ -55,10 +55,6 @@ struct GIClearReservoirs
     }
 };
 
-//cbuffer CB
-//{
-//    GIClearReservoirs gGIClearReservoirs;
-//}
 ParameterBlock<GIClearReservoirs> gGIClearReservoirs;
 
 [numthreads(16, 16, 1)]

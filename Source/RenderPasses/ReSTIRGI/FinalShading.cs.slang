@@ -32,7 +32,6 @@ struct FinalShading
     //static const bool kUseEnvBackground = USE_ENV_BACKGROUND;
 
     Texture2D<PackedHitInfo> vbuffer;
-    Texture2D<float4> vColor;
 
     //ScreenSpaceReSTIR screenSpaceReSTIR;
     //StandardMaterial standardMaterial;
@@ -76,10 +75,10 @@ struct FinalShading
             float3 sampleNormal;
             float3 sampleRadiance;
 
-            float3 vcolor;
+            // float3 vcolor;
             //if (kComputeDirect)
             //{
-            vcolor = float3(vColor[pixel].x, vColor[pixel].y, vColor[pixel].z);
+            // vcolor = float3(vColor[pixel].x, vColor[pixel].y, vColor[pixel].z);
             //}
 
             float avgWeight;

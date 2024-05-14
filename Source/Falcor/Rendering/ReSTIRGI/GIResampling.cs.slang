@@ -523,10 +523,6 @@ struct GIResampling
 };
 
 ParameterBlock<GIResampling> gGIResampling;
-//cbuffer CB
-//{
-//    GIResampling gGIResampling;
-//}
 
 [numthreads(16, 16, 1)]
 void main(uint3 dispatchThreadId : SV_DispatchThreadID)

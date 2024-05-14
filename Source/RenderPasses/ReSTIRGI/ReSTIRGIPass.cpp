@@ -1,29 +1,11 @@
 /***************************************************************************
  # Copyright (c) 2015-21, NVIDIA CORPORATION. All rights reserved.
  #
- # Redistribution and use in source and binary forms, with or without
- # modification, are permitted provided that the following conditions
- # are met:
- #  * Redistributions of source code must retain the above copyright
- #    notice, this list of conditions and the following disclaimer.
- #  * Redistributions in binary form must reproduce the above copyright
- #    notice, this list of conditions and the following disclaimer in the
- #    documentation and/or other materials provided with the distribution.
- #  * Neither the name of NVIDIA CORPORATION nor the names of its
- #    contributors may be used to endorse or promote products derived
- #    from this software without specific prior written permission.
- #
- # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS "AS IS" AND ANY
- # EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- # IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- # PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
- # CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- # EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- # PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- # PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
- # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ # NVIDIA CORPORATION and its licensors retain all intellectual property
+ # and proprietary rights in and to this software, related documentation
+ # and any modifications thereto.  Any use, reproduction, disclosure or
+ # distribution of this software and related documentation without an express
+ # license agreement from NVIDIA CORPORATION is strictly prohibited.
  **************************************************************************/
 #include "ReSTIRGIPass.h"
 #include "RenderGraph/RenderPassHelpers.h"
@@ -233,15 +215,9 @@ void ReSTIRGIPass::execute(RenderContext* pRenderContext, const RenderData& rend
         auto clear = [&](const ChannelDesc& channel)
         {
             auto pTex = renderData[channel.name]->asTexture();
-            if (pTex)
-            {
-                pRenderContext->clearUAV(pTex->getUAV().get(), float4(0.f));
-            }
+            if (pTex) pRenderContext->clearUAV(pTex->getUAV().get(), float4(0.f));
         };
-        for (const auto& channel : kOutputChannels)
-        {
-            clear(channel);
-        }
+        for (const auto& channel : kOutputChannels) clear(channel);
         return;
     }
 
@@ -259,7 +235,7 @@ void ReSTIRGIPass::execute(RenderContext* pRenderContext, const RenderData& rend
     // Check if GBuffer has adjusted shading normals enabled.
     mGBufferAdjustShadingNormals = dict.getValue(Falcor::kRenderPassGBufferAdjustShadingNormals, false);
 
-    for (size_t i = 0; i < mpScreenSpaceReSTIR.size(); ++i)
+    for (int i = 0; i < mpScreenSpaceReSTIR.size(); i++)
     {
         mpScreenSpaceReSTIR[i]->beginFrame(pRenderContext, mFrameDim);
 
@@ -271,7 +247,7 @@ void ReSTIRGIPass::execute(RenderContext* pRenderContext, const RenderData& rend
 
         mpScreenSpaceReSTIR[i]->updateReSTIRGI(pRenderContext, pMotionVectors);
 
-        finalShading(pRenderContext, pVBuffer, pVColor, renderData, i);
+        finalShading(pRenderContext, pVBuffer, renderData, i);
 
         mpScreenSpaceReSTIR[i]->endFrame(pRenderContext);
     }
@@ -348,8 +324,8 @@ void ReSTIRGIPass::prepareSurfaceData(RenderContext* pRenderContext, const Textu
 
     var["vbuffer"] = pVBuffer;
     var["frameDim"] = mFrameDim;
+
     mpScreenSpaceReSTIR[instanceID]->setShaderData(mpPrepareSurfaceData["gScreenSpaceReSTIR"]);
-    // mpScreenSpaceReSTIR[instanceID]->setShaderDataRoot(mpPrepareSurfaceData->getRootVar());
 
     if (instanceID == 0 && mpFinalShading && mpScreenSpaceReSTIR[0]->mRequestParentRecompile)
     {
@@ -401,8 +377,8 @@ void ReSTIRGIPass::initialSample(
     var["sColor"] = pSColor;
     var["random"] = pRandom;
     var["frameDim"] = mFrameDim;
+
     mpScreenSpaceReSTIR[instanceID]->setShaderData(mpInitialSampling["gScreenSpaceReSTIR"]);
-    // mpScreenSpaceReSTIR[instanceID]->setShaderDataRoot(mpInitialSampling->getRootVar());
 
     if (instanceID == 0 && mpFinalShading && mpScreenSpaceReSTIR[0]->mRequestParentRecompile)
     {
@@ -414,7 +390,7 @@ void ReSTIRGIPass::initialSample(
 }
 #endif
 
-void ReSTIRGIPass::finalShading(RenderContext* pRenderContext, const Texture::SharedPtr& pVBuffer, const Texture::SharedPtr& pVColor, const RenderData& renderData, size_t instanceID)
+void ReSTIRGIPass::finalShading(RenderContext* pRenderContext, const Texture::SharedPtr& pVBuffer, const RenderData& renderData, size_t instanceID)
 {
     assert(!mpScreenSpaceReSTIR.empty() && mpScreenSpaceReSTIR[instanceID]);
 
@@ -448,13 +424,11 @@ void ReSTIRGIPass::finalShading(RenderContext* pRenderContext, const Texture::Sh
     auto var = mpFinalShading["gFinalShading"];
 
     var["vbuffer"] = pVBuffer;
-    var["vColor"] = pVColor;
     var["frameDim"] = mFrameDim;
     var["numReSTIRInstances"] = mNumReSTIRInstances;
     var["ReSTIRInstanceID"] = instanceID;
 
     mpScreenSpaceReSTIR[instanceID]->setShaderData(mpFinalShading["gScreenSpaceReSTIR"]);
-    // mpScreenSpaceReSTIR[instanceID]->setShaderDataRoot(mpFinalShading->getRootVar());
 
     // Bind output channels as UAV buffers.
     var = mpFinalShading->getRootVar();
